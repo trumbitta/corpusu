@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Character, Team } from '@corpusu/core';
-import { CombatEngine } from './engine';
+import { CombatEngine, CombatEvent } from './engine.js';
 
 describe('CombatEngine', () => {
   it('should initialize with two teams', () => {
@@ -49,7 +49,7 @@ describe('CombatEngine', () => {
     const engine = new CombatEngine(teamA, teamB);
     const events: any[] = [];
 
-    engine.events$.subscribe((event) => {
+    engine.events$.subscribe((event: CombatEvent) => {
       events.push(event);
     });
 
@@ -79,7 +79,7 @@ describe('CombatEngine', () => {
     const engine = new CombatEngine(teamA, teamB);
     let teamDefeatedEvent = false;
 
-    engine.events$.subscribe((event) => {
+    engine.events$.subscribe((event: CombatEvent) => {
       if (event.type === 'teamDefeated') {
         teamDefeatedEvent = true;
       }
