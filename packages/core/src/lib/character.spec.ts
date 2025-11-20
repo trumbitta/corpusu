@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Character, getDamage } from './character';
+import { Character, getDamage } from './character.js';
 
 describe('getDamage', () => {
   it('should calculate damage correctly', () => {

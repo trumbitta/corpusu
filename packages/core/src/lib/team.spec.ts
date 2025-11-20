@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { Character } from './character';
-import { Team } from './team';
+import { Character } from './character.js';
+import { Team } from './team.js';
 
 describe('Team', () => {
   it('should initialize with correct properties', () => {
