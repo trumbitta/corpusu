@@ -10,11 +10,11 @@ const teamA = new Team('Heroes', [
 ]);
 
 const teamB = new Team('Enemies', [
-  new Character('E1', { attack: 10, dexterity: 0.8, speed: 1, defense: 3 }),
-  new Character('E2', { attack: 9, dexterity: 0.7, speed: 1.2, defense: 2 }),
-  new Character('E3', { attack: 11, dexterity: 0.85, speed: 0.9, defense: 3 }),
-  new Character('E4', { attack: 8, dexterity: 0.75, speed: 1.1, defense: 2 }),
-  new Character('E5', { attack: 12, dexterity: 0.8, speed: 1, defense: 3 }),
+  new Character('E1', { attack: 10, dexterity: 0.8, speed: 1, defense: 4 }),
+  new Character('E2', { attack: 12, dexterity: 0.7, speed: 1.2, defense: 3 }),
+  new Character('E3', { attack: 8, dexterity: 0.9, speed: 0.9, defense: 2 }),
+  new Character('E4', { attack: 9, dexterity: 0.75, speed: 1.1, defense: 3 }),
+  new Character('E5', { attack: 11, dexterity: 0.8, speed: 1, defense: 2 }),
 ]);
 
 const engine = new CombatEngine(teamA, teamB);
@@ -38,7 +38,16 @@ engine.events$.subscribe((event) => {
   }
 });
 
+const engineUpdateRatio = 4;
+const updateEngine = () => {
+  engine.update(engineUpdateRatio);
+};
+
+if (engine.running) {
+  updateEngine();
+}
+
 const interval = setInterval(() => {
-  engine.update(2);
+  updateEngine();
   if (!engine.running) clearInterval(interval);
-}, 50);
+}, 10);
