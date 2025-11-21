@@ -46,7 +46,7 @@ describe('Team', () => {
     expect(team.alive).toHaveLength(1);
   });
 
-  it('should be defeated when all members are dead', () => {
+  it('should be defeated when all members are defeated', () => {
     const members = [
       new Character('Hero1', {
         attack: 10,

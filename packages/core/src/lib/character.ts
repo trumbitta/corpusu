@@ -1,19 +1,28 @@
-export type Stats = {
-  attack: number;
-  dexterity: number;
-  speed: number;
-  defense: number;
-};
+import { z } from 'zod';
+
+export const StatsSchema = z.object({
+  attack: z.number(),
+  dexterity: z.number(),
+  speed: z.number(),
+  defense: z.number(),
+});
+
+export type Stats = z.infer<typeof StatsSchema>;
 
 export function getDamage(attack: number, defense: number) {
   return Math.max(0, attack - Math.floor(defense * 0.5));
 }
 
 export class Character {
-  hp = 100;
+  public hp: number;
+  public readonly maxHp: number;
   private attackBar = 0;
 
-  constructor(public name: string, public stats: Stats) {}
+  constructor(public name: string, public stats: Stats, initialHp = 100) {
+    // Ensure HP is a positive integer and capped at a reasonable max (e.g., 9999)
+    this.maxHp = Math.max(1, Math.min(initialHp, 9999));
+    this.hp = this.maxHp;
+  }
 
   update(delta: number) {
     this.attackBar += this.stats.speed * delta;

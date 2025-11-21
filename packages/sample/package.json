@@ -21,7 +21,12 @@
           "main": "packages/sample/src/main.ts",
           "tsConfig": "packages/sample/tsconfig.app.json",
           "assets": [
-            "packages/sample/src/assets"
+            "packages/sample/src/assets",
+            {
+              "glob": "**/*",
+              "input": "packages/core/src/data/characters",
+              "output": "characters"
+            }
           ],
           "esbuildOptions": {
             "sourcemap": true,

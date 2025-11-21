@@ -14,16 +14,21 @@ describe('getDamage', () => {
 });
 
 describe('Character', () => {
-  it('should initialize with correct properties', () => {
-    const char = new Character('Hero', {
-      attack: 10,
-      dexterity: 0.8,
-      speed: 1.5,
-      defense: 5,
-    });
+  it('should initialize with correct properties and custom HP', () => {
+    const char = new Character(
+      'Hero',
+      {
+        attack: 10,
+        dexterity: 0.8,
+        speed: 1.5,
+        defense: 5,
+      },
+      150
+    );
 
     expect(char.name).toBe('Hero');
-    expect(char.hp).toBe(100);
+    expect(char.hp).toBe(150);
+    expect(char.maxHp).toBe(150);
     expect(char.stats.attack).toBe(10);
   });
 
@@ -40,13 +45,17 @@ describe('Character', () => {
     expect(char.canAttack()).toBe(true);
   });
 
-  it('should not be able to attack when dead', () => {
-    const char = new Character('Hero', {
-      attack: 10,
-      dexterity: 0.8,
-      speed: 10,
-      defense: 5,
-    });
+  it('should not be able to attack when defeated', () => {
+    const char = new Character(
+      'Hero',
+      {
+        attack: 10,
+        dexterity: 0.8,
+        speed: 10,
+        defense: 5,
+      },
+      80
+    );
 
     char.update(10);
     char.hp = 0;

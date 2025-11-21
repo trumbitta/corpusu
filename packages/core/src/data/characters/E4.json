@@ -1,0 +1,10 @@
+{
+  "name": "E4",
+  "hp": 105,
+  "stats": {
+    "attack": 9,
+    "dexterity": 0.75,
+    "speed": 1.1,
+    "defense": 3
+  }
+}
