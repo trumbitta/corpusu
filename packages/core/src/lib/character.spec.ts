@@ -16,6 +16,7 @@ describe('getDamage', () => {
 describe('Character', () => {
   it('should initialize with correct properties and custom HP', () => {
     const char = new Character(
+      'T1',
       'Hero',
       {
         attack: 10,
@@ -26,6 +27,7 @@ describe('Character', () => {
       150
     );
 
+    expect(char.id).toBe('T1');
     expect(char.name).toBe('Hero');
     expect(char.hp).toBe(150);
     expect(char.maxHp).toBe(150);
@@ -33,7 +35,7 @@ describe('Character', () => {
   });
 
   it('should update attack bar based on speed', () => {
-    const char = new Character('Hero', {
+    const char = new Character('T2', 'Hero', {
       attack: 10,
       dexterity: 0.8,
       speed: 10,
@@ -47,6 +49,7 @@ describe('Character', () => {
 
   it('should not be able to attack when defeated', () => {
     const char = new Character(
+      'T3',
       'Hero',
       {
         attack: 10,
@@ -63,13 +66,13 @@ describe('Character', () => {
   });
 
   it('should reset attack bar after performing attack', () => {
-    const attacker = new Character('Attacker', {
+    const attacker = new Character('T4', 'Attacker', {
       attack: 10,
       dexterity: 1.0,
       speed: 10,
       defense: 5,
     });
-    const target = new Character('Target', {
+    const target = new Character('T5', 'Target', {
       attack: 10,
       dexterity: 0.8,
       speed: 1,
@@ -83,13 +86,13 @@ describe('Character', () => {
   });
 
   it('should reduce target HP on successful attack', () => {
-    const attacker = new Character('Attacker', {
+    const attacker = new Character('T6', 'Attacker', {
       attack: 20,
       dexterity: 1.0,
       speed: 10,
       defense: 5,
     });
-    const target = new Character('Target', {
+    const target = new Character('T7', 'Target', {
       attack: 10,
       dexterity: 0.8,
       speed: 1,

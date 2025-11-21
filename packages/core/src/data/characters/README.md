@@ -4,7 +4,8 @@ Each character is defined in a separate JSON file. Example schema:
 
 ```json
 {
-  "name": "H1",
+  "id": "C1",
+  "name": "Arion Stormguard",
   "hp": 120,
   "stats": {
     "attack": 10,
@@ -15,8 +16,9 @@ Each character is defined in a separate JSON file. Example schema:
 }
 ```
 
+- `id`: Unique character ID (string, e.g., C1, C2, ...)
 - `name`: Character name (string)
 - `hp`: Initial/max HP (integer)
 - `stats`: Object containing attack, dexterity, speed, defense
 
-Add new characters by creating additional JSON files in this folder.
+Add new characters by creating additional JSON files in this folder. Ensure each character has a unique `id`.

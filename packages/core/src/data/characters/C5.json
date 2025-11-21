@@ -1,6 +1,7 @@
 {
-  "name": "Krynn the Wraith",
-  "hp": 90,
+  "id": "C5",
+  "name": "Darius Nightblade",
+  "hp": 85,
   "stats": {
     "attack": 11,
     "dexterity": 0.8,

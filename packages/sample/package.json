@@ -19,7 +19,7 @@
             "esm"
           ],
           "bundle": false,
-          "main": "packages/sample/src/main.ts",
+          "main": "packages/sample/src/main.tsx",
           "tsConfig": "packages/sample/tsconfig.app.json",
           "assets": [
             "packages/sample/src/assets",
@@ -110,6 +110,7 @@
     "ink": "^6.5.1"
   },
   "devDependencies": {
+    "@types/react": "^19.2.6",
     "tsx": "^4.20.6"
   },
   "scripts": {

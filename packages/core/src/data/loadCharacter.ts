@@ -8,6 +8,7 @@ function getPath() {
 import { z } from 'zod';
 
 export const CharacterDataSchema = z.object({
+  id: z.string(),
   name: z.string(),
   hp: z.number().int().positive(),
   stats: StatsSchema,
@@ -31,7 +32,7 @@ export async function loadCharacterFromFile(
       }`
     );
   }
-  return new Character(parsed.name, parsed.stats, parsed.hp);
+  return new Character(parsed.id, parsed.name, parsed.stats, parsed.hp);
 }
 
 export async function loadCharactersFromFolder(

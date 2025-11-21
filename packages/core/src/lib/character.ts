@@ -17,12 +17,19 @@ export class Character {
   public hp: number;
   public readonly maxHp: number;
   private attackBar = 0;
+  public readonly id: string;
 
-  constructor(public name: string, public stats: Stats, initialHp = 100) {
+  constructor(id: string, name: string, stats: Stats, initialHp = 100) {
+    this.id = id;
+    this.name = name;
+    this.stats = stats;
     // Ensure HP is a positive integer and capped at a reasonable max (e.g., 9999)
     this.maxHp = Math.max(1, Math.min(initialHp, 9999));
     this.hp = this.maxHp;
   }
+
+  public readonly name: string;
+  public readonly stats: Stats;
 
   update(delta: number) {
     this.attackBar += this.stats.speed * delta;
