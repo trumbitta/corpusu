@@ -17,7 +17,15 @@
 
 - **core**: Defines `Character` and `Team` with configurable HP and stats. HP is set per character, allowing for diverse builds. Roles (tank, DPS, support, etc.) are not fixed, but emerge naturally from stat combinations and user choices. Attack logic and alive/defeated status are stat-driven.
 - **engine**: Implements a real-time combat engine with action bar mechanics, event emission, and win/loss conditions.
-- **sample**: Demonstrates a battle between two teams using the engine, logging events to the console.
+- **sample**: Demonstrates a battle between two teams using the engine, logging events to the console and rendering a TUI with Ink.
+
+## Latest Additions
+
+- **Unique Character IDs**: All character selection and filtering now use unique IDs (C1–C10) instead of names. JSON files and codebase updated for this change.
+- **Character JSON Renaming**: All character data files are now named C1.json–C10.json for consistency.
+- **TUI Alignment Fixes**: The Ink-based TUI now keeps HP and defeated emoji perfectly aligned for all characters.
+- **Persistent Event Log**: The event log in the TUI persists and highlights the latest event.
+- **Defeated Status by Event**: Defeated characters are tracked by event, not just HP, and are visually grayed out and marked with a dizzy emoji.
 
 ## Development Notes
 

@@ -107,7 +107,8 @@
   "dependencies": {
     "@corpusu/core": "*",
     "@corpusu/engine": "*",
-    "ink": "^6.5.1"
+    "ink": "^6.5.1",
+    "ink-big-text": "^2.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.6",

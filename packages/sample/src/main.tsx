@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { useEffect, useState } from 'react';
 import { render, Box, Text } from 'ink';
+import BigText from 'ink-big-text';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -54,7 +55,29 @@ function TeamArea({ team, defeated, color, emoji, label }: TeamAreaProps) {
 }
 
 function EventLog({ events }: { events: string[] }) {
-  // ...existing code...
+  // Render victory/shoutout messages with custom style
+  // Check for victory/shoutout messages
+  const last = events[events.length - 1];
+  if (typeof last === 'string' && last.endsWith('wins!')) {
+    // Find shoutout if present
+    const shoutout =
+      events[events.length - 2] && events[events.length - 2].startsWith('🏆')
+        ? events[events.length - 2]
+        : null;
+    return (
+      <Box flexDirection="column" alignItems="center" marginTop={2}>
+        <BigText text={last} font="block" />
+        {shoutout && (
+          <Text color="cyan" bold>
+            {' '.repeat(4)}
+            {shoutout}
+            {' '.repeat(4)}
+          </Text>
+        )}
+      </Box>
+    );
+  }
+
   return (
     <Box flexDirection="column" alignItems="center" marginTop={2}>
       {events.slice(-3).map((ev, i, arr) => (
@@ -108,14 +131,20 @@ const App = ({ teamA, teamB, engine }: AppProps) => {
           break;
         }
         case 'teamDefeated': {
-          log = `The team ${event.team.name} has been defeated!`;
-          // Shoutout top damage dealer
-          const topDealer = Object.entries(damageMap).sort(
+          const defeatedTeam = event.team.name;
+          const winningTeam = defeatedTeam === 'Team A' ? 'Team B' : 'Team A';
+          const winningEmoji =
+            winningTeam === 'Team A' ? TEAM_A_EMOJI : TEAM_B_EMOJI;
+          const topDealerEntry = Object.entries(damageMap).sort(
             (a, b) => b[1] - a[1]
           )[0];
-          if (topDealer) {
-            log += `\n🏆 Shoutout: ${topDealer[0]} dealt the most damage (${topDealer[1]} HP)!`;
-          }
+          const topDealerName = topDealerEntry?.[0] || '';
+          const topDealerDamage = topDealerEntry?.[1] || 0;
+          setEvents((ev) => [
+            ...ev,
+            `🏆 ${topDealerName} of ${winningEmoji} ${winningTeam} dealt the most damage (${topDealerDamage} HP)!`,
+            `${winningTeam} wins!`,
+          ]);
           break;
         }
       }
