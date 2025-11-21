@@ -2,6 +2,7 @@
   "name": "@corpusu/sample",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "nx": {
     "name": "sample",
     "targets": {
@@ -15,7 +16,7 @@
           "platform": "node",
           "outputPath": "packages/sample/dist",
           "format": [
-            "cjs"
+            "esm"
           ],
           "bundle": false,
           "main": "packages/sample/src/main.ts",
@@ -105,6 +106,14 @@
   },
   "dependencies": {
     "@corpusu/core": "*",
-    "@corpusu/engine": "*"
+    "@corpusu/engine": "*",
+    "ink": "^6.5.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.6"
+  },
+  "scripts": {
+    "build:ui": "tsc --project tsconfig.app.json",
+    "run:ui": "node dist/tui.js"
   }
 }
