@@ -1,0 +1,11 @@
+{
+  "id": "C11",
+  "name": "Seraphine Vale",
+  "hp": 100,
+  "stats": {
+    "attack": 13,
+    "dexterity": 0.65,
+    "speed": 1.0,
+    "defense": 2
+  }
+}

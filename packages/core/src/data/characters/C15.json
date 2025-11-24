@@ -1,0 +1,11 @@
+{
+  "id": "C15",
+  "name": "Vira Nightshade",
+  "hp": 95,
+  "stats": {
+    "attack": 12,
+    "dexterity": 0.8,
+    "speed": 1.1,
+    "defense": 3
+  }
+}

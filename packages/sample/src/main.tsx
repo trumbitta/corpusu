@@ -1,3 +1,11 @@
+// Local type for Team-like objects (matches @corpusu/core Team)
+type TeamLike = {
+  name: string;
+  members: Character[];
+  alive: Character[];
+  isDefeated: boolean;
+};
+
 import { CombatEngine } from '@corpusu/engine';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,10 +21,9 @@ const TEAM_B_EMOJI = '🟦';
 const DEFEATED_EMOJI = '😵';
 
 import type { Character } from '@corpusu/core';
-import type { Team } from '@corpusu/core';
 
 interface TeamAreaProps {
-  team: Team;
+  team: TeamLike; // Team is loaded dynamically
   defeated: Set<string>;
   color: string;
   emoji: string;
@@ -94,10 +101,11 @@ function EventLog({ events }: { events: string[] }) {
 }
 
 interface AppProps {
-  teamA: Team;
-  teamB: Team;
+  teamA: TeamLike;
+  teamB: TeamLike;
   engine: CombatEngine;
 }
+
 const App = ({ teamA, teamB, engine }: AppProps) => {
   const [events, setEvents] = useState<string[]>([]);
   const [defeated, setDefeated] = useState<Set<string>>(new Set());
@@ -109,7 +117,7 @@ const App = ({ teamA, teamB, engine }: AppProps) => {
       | { type: 'hit'; attacker: Character; target: Character; damage: number }
       | { type: 'miss'; attacker: Character }
       | { type: 'defeat'; character: Character }
-      | { type: 'teamDefeated'; team: Team };
+      | { type: 'teamDefeated'; team: TeamLike }; // Team is loaded dynamically
     const sub = engine.events$.subscribe((event: EventType) => {
       let log = '';
       switch (event.type) {
@@ -197,25 +205,253 @@ const App = ({ teamA, teamB, engine }: AppProps) => {
   );
 };
 
+import { useInput } from 'ink';
+
+function TeamSelection({
+  available,
+  cpuTeam,
+  onSelect,
+}: {
+  available: Character[];
+  cpuTeam: Character[];
+  onSelect: (team: Character[]) => void;
+}) {
+  // Interactive multi-select state
+  const teamSize = 5;
+  const cardsPerRow = 4;
+  const visibleRows = 2;
+  const [cursor, setCursor] = useState(0);
+  const [windowStartRow, setWindowStartRow] = useState(0);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [confirmed, setConfirmed] = useState(false);
+  const [confirmExit, setConfirmExit] = useState(false);
+
+  useInput((input, key) => {
+    if (confirmExit) {
+      if (key.escape) {
+        setConfirmExit(false);
+        return;
+      }
+      if (key.return) {
+        process.exit(0);
+      }
+      return;
+    }
+    if (confirmed) return;
+    if (input === 'q') {
+      setConfirmExit(true);
+      return;
+    }
+    if (key.leftArrow) {
+      setCursor((c) =>
+        c % cardsPerRow === 0
+          ? Math.min(c + cardsPerRow - 1, available.length - 1)
+          : c - 1
+      );
+    } else if (key.rightArrow) {
+      setCursor((c) =>
+        c % cardsPerRow === cardsPerRow - 1 || c === available.length - 1
+          ? c - (cardsPerRow - 1) >= 0
+            ? c - (cardsPerRow - 1)
+            : 0
+          : Math.min(c + 1, available.length - 1)
+      );
+    } else if (key.upArrow) {
+      setCursor((c) => {
+        const row = Math.floor(c / cardsPerRow);
+        if (row === windowStartRow) {
+          if (windowStartRow > 0) {
+            setWindowStartRow((prev) => prev - 1);
+            return c - cardsPerRow >= 0 ? c - cardsPerRow : c;
+          } else {
+            return c;
+          }
+        } else {
+          return c - cardsPerRow >= 0 ? c - cardsPerRow : c;
+        }
+      });
+    } else if (key.downArrow) {
+      setCursor((c) => {
+        const row = Math.floor(c / cardsPerRow);
+        const maxRow = Math.ceil(available.length / cardsPerRow) - 1;
+        if (row === windowStartRow + visibleRows - 1) {
+          if (windowStartRow + visibleRows - 1 < maxRow) {
+            setWindowStartRow((prev) => prev + 1);
+            return c + cardsPerRow < available.length ? c + cardsPerRow : c;
+          } else {
+            return c;
+          }
+        } else {
+          return c + cardsPerRow < available.length ? c + cardsPerRow : c;
+        }
+      });
+    } else if (input === ' ' || key.return) {
+      const id = available[cursor].id;
+      setSelected((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) {
+          next.delete(id);
+        } else if (next.size < teamSize) {
+          next.add(id);
+        }
+        return next;
+      });
+    } else if (input === 'c' && selected.size === teamSize) {
+      setConfirmed(true);
+      onSelect(available.filter((c) => selected.has(c.id)));
+    }
+  });
+
+  // Calculate window start index for rendering
+  const start = windowStartRow * cardsPerRow;
+  const end = Math.min(start + cardsPerRow * visibleRows, available.length);
+
+  return (
+    <Box flexDirection="column" alignItems="center" marginTop={2}>
+      <Text color="blue" bold>
+        CPU Team:
+      </Text>
+      {cpuTeam.map((c) => (
+        <Text key={c.id}>
+          {c.name} (HP: {c.hp}, ATK: {c.stats.attack}, DEF: {c.stats.defense},
+          SPD: {c.stats.speed}, DEX: {c.stats.dexterity})
+        </Text>
+      ))}
+      <Box marginTop={1}>
+        <Text color="green" bold>
+          Select your team (choose {teamSize}):
+        </Text>
+      </Box>
+      <Box flexDirection="column" marginY={1}>
+        {Array.from({ length: visibleRows }).map((_, rowIdx) => {
+          const rowStart = start + rowIdx * cardsPerRow;
+          if (rowStart >= end) return null;
+          return (
+            <Box key={rowIdx} flexDirection="row" justifyContent="center">
+              {Array.from({ length: cardsPerRow }).map((_, colIdx) => {
+                const idx = rowStart + colIdx;
+                if (idx >= end) return <Box key={colIdx} width={28} />;
+                const c = available[idx];
+                const isCursor = idx === cursor;
+                const isSelected = selected.has(c.id);
+                return (
+                  <Box
+                    key={c.id}
+                    flexDirection="column"
+                    borderStyle={isCursor ? 'double' : 'round'}
+                    borderColor={
+                      isSelected ? 'cyan' : isCursor ? 'yellow' : 'gray'
+                    }
+                    marginX={1}
+                    paddingX={2}
+                    paddingY={0}
+                    width={28}
+                    minHeight={5}
+                    backgroundColor={isCursor ? 'black' : undefined}
+                  >
+                    <Text bold color={isSelected ? 'cyan' : undefined}>
+                      {isSelected ? '●' : '○'} {c.name}
+                    </Text>
+                    <Text>
+                      HP: {c.hp} ATK: {c.stats.attack} DEF: {c.stats.defense}
+                    </Text>
+                    <Text>
+                      SPD: {c.stats.speed} DEX: {c.stats.dexterity}
+                    </Text>
+                    {isCursor && (
+                      <Text color="yellow">
+                        {isSelected ? 'Selected' : 'Not selected'}
+                      </Text>
+                    )}
+                  </Box>
+                );
+              })}
+            </Box>
+          );
+        })}
+      </Box>
+      <Text color="gray">
+        Use ↑/↓ to scroll, space/enter to select, 'c' to confirm, 'q' to quit.
+      </Text>
+      {confirmExit && (
+        <Text color="red" bold>
+          Are you sure you want to quit? Press Enter to confirm, Esc to cancel.
+        </Text>
+      )}
+      <Text color={selected.size === teamSize ? 'green' : 'red'}>
+        {selected.size} / {teamSize} selected
+      </Text>
+      {confirmed && (
+        <Text color="green" bold>
+          Team confirmed!
+        </Text>
+      )}
+    </Box>
+  );
+}
+
+function GameFlow({ allCharacters }: { allCharacters: Character[] }) {
+  const cpuTeamSize = 5;
+  const shuffle = (arr: Character[]) =>
+    arr
+      .map((v) => [Math.random(), v] as [number, Character])
+      .sort((a, b) => a[0] - b[0])
+      .map(([, v]) => v);
+  const [phase, setPhase] = useState<'select' | 'battle'>('select');
+  const [cpuTeam, setCpuTeam] = useState<Character[]>([]);
+  const [playerTeam, setPlayerTeam] = useState<Character[]>([]);
+  const [TeamClass, setTeamClass] = useState<
+    null | (new (name: string, members: Character[]) => TeamLike)
+  >(null);
+
+  useEffect(() => {
+    // CPU picks first
+    const shuffled = shuffle(allCharacters);
+    setCpuTeam(shuffled.slice(0, cpuTeamSize));
+    // Dynamically import Team class
+    import('@corpusu/core').then((mod) => setTeamClass(() => mod.Team));
+  }, [allCharacters]);
+
+  if (phase === 'select' || !TeamClass) {
+    return (
+      <TeamSelection
+        available={allCharacters.filter(
+          (c) => !cpuTeam.some((cpu) => cpu.id === c.id)
+        )}
+        cpuTeam={cpuTeam}
+        onSelect={(team) => {
+          setPlayerTeam(team);
+          setPhase('battle');
+        }}
+      />
+    );
+  }
+
+  // After selection, run the battle
+  const playerTeamObj = TeamClass
+    ? (new TeamClass('Player', playerTeam) as TeamLike)
+    : undefined;
+  const cpuTeamObj = TeamClass
+    ? (new TeamClass('CPU', cpuTeam) as TeamLike)
+    : undefined;
+  if (!playerTeamObj || !cpuTeamObj) return null;
+  const engine = new CombatEngine(playerTeamObj, cpuTeamObj);
+  return (
+    <App
+      teamA={playerTeamObj as TeamLike}
+      teamB={cpuTeamObj as TeamLike}
+      engine={engine}
+    />
+  );
+}
+
 async function main() {
   const core = await import('@corpusu/core');
-  const { Team, loadCharactersFromFolder } = core;
-  // Character type is inferred from loader
+  const { loadCharactersFromFolder } = core;
   const allCharacters = await loadCharactersFromFolder(
     path.resolve(__dirname, 'characters')
   );
-  const teamAIds = ['C1', 'C2', 'C3', 'C4', 'C5'];
-  const teamBIds = ['C6', 'C7', 'C8', 'C9', 'C10'];
-  const teamA = new Team(
-    'Team A',
-    allCharacters.filter((c) => teamAIds.includes(c.id))
-  );
-  const teamB = new Team(
-    'Team B',
-    allCharacters.filter((c) => teamBIds.includes(c.id))
-  );
-  const engine = new CombatEngine(teamA, teamB);
-  render(<App teamA={teamA} teamB={teamB} engine={engine} />);
+  render(<GameFlow allCharacters={allCharacters} />);
 }
 
 main();

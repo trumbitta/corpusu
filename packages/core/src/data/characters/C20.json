@@ -1,0 +1,11 @@
+{
+  "id": "C20",
+  "name": "Magnus Stormreaver",
+  "hp": 115,
+  "stats": {
+    "attack": 9,
+    "dexterity": 0.9,
+    "speed": 1.0,
+    "defense": 5
+  }
+}

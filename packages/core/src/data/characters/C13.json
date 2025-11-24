@@ -1,0 +1,11 @@
+{
+  "id": "C13",
+  "name": "Nyssa Quickstep",
+  "hp": 85,
+  "stats": {
+    "attack": 10,
+    "dexterity": 0.85,
+    "speed": 1.3,
+    "defense": 2
+  }
+}
