@@ -1,11 +1,12 @@
 {
   "id": "C12",
-  "name": "Galen Ironbark",
+  "name": "Galen",
   "hp": 130,
   "stats": {
     "attack": 9,
     "dexterity": 0.7,
     "speed": 0.8,
     "defense": 5
-  }
+  },
+  "row": "mid"
 }

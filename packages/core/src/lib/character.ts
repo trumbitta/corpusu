@@ -20,26 +20,35 @@ export const defaultHitChance: HitChanceFormula = (attacker) => {
   return attacker.dexterity;
 };
 
+export type CharacterRow = 'front' | 'mid' | 'back';
+
 export class Character {
   public hp: number;
   public readonly maxHp: number;
   private attackBar = 0;
   public readonly id: string;
+  public readonly row: CharacterRow;
+  public readonly getDamage: DamageFormula;
+  public readonly getHitChance: HitChanceFormula;
 
   constructor(
     id: string,
     name: string,
     stats: Stats,
+    row: CharacterRow,
     initialHp = 100,
-    private getDamage: DamageFormula = defaultGetDamage,
-    private getHitChance: HitChanceFormula = defaultHitChance
+    getDamage: DamageFormula = defaultGetDamage,
+    getHitChance: HitChanceFormula = defaultHitChance
   ) {
     this.id = id;
     this.name = name;
     this.stats = stats;
+    this.row = row;
     // Ensure HP is a positive integer and capped at a reasonable max (e.g., 9999)
     this.maxHp = Math.max(1, Math.min(initialHp, 9999));
     this.hp = this.maxHp;
+    this.getDamage = getDamage;
+    this.getHitChance = getHitChance;
   }
 
   public readonly name: string;

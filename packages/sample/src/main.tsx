@@ -350,7 +350,16 @@ function TeamSelection({
                     backgroundColor={isCursor ? 'black' : undefined}
                   >
                     <Text bold color={isSelected ? 'cyan' : undefined}>
-                      {isSelected ? '●' : '○'} {c.name}
+                      {isSelected ? '●' : '○'} {c.name}{' '}
+                      <Text bold color="white">
+                        {c.row === 'front'
+                          ? 'F'
+                          : c.row === 'mid'
+                          ? 'M'
+                          : c.row === 'back'
+                          ? 'B'
+                          : '?'}
+                      </Text>
                     </Text>
                     <Text>
                       HP: {c.hp} ATK: {c.stats.attack} DEF: {c.stats.defense}

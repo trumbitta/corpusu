@@ -1,11 +1,12 @@
 {
   "id": "C16",
-  "name": "Orin Frostbeard",
+  "name": "Orin",
   "hp": 110,
   "stats": {
     "attack": 10,
     "dexterity": 0.75,
     "speed": 1.0,
     "defense": 4
-  }
+  },
+  "row": "back"
 }

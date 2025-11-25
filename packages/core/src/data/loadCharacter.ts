@@ -1,3 +1,4 @@
+export type CharacterData = z.infer<typeof CharacterDataSchema>;
 import { Character, StatsSchema } from '../lib/character.js';
 import fs from 'fs';
 let pathPromise: Promise<typeof import('node:path')> | null = null;
@@ -12,9 +13,8 @@ export const CharacterDataSchema = z.object({
   name: z.string(),
   hp: z.number().int().positive(),
   stats: StatsSchema,
+  row: z.enum(['front', 'mid', 'back']).optional(),
 });
-
-export type CharacterData = z.infer<typeof CharacterDataSchema>;
 
 export async function loadCharacterFromFile(
   filePath: string
@@ -32,7 +32,13 @@ export async function loadCharacterFromFile(
       }`
     );
   }
-  return new Character(parsed.id, parsed.name, parsed.stats, parsed.hp);
+  return new Character(
+    parsed.id,
+    parsed.name,
+    parsed.stats,
+    parsed.row ?? 'front',
+    parsed.hp
+  );
 }
 
 export async function loadCharactersFromFolder(

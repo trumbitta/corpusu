@@ -1,11 +1,12 @@
 {
   "id": "C19",
-  "name": "Tessa Brightspear",
+  "name": "Tessa",
   "hp": 100,
   "stats": {
     "attack": 12,
     "dexterity": 0.85,
     "speed": 1.1,
     "defense": 2
-  }
+  },
+  "row": "back"
 }
