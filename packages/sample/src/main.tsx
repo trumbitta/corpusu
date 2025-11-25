@@ -11,6 +11,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { useEffect, useState } from 'react';
+// Milliseconds between engine update ticks (controls real-time battle speed)
+const ENGINE_INTERVAL_DELAY = 100;
 import { render, Box, Text } from 'ink';
 import BigText from 'ink-big-text';
 
@@ -21,6 +23,12 @@ const TEAM_B_EMOJI = '🟦';
 const DEFEATED_EMOJI = '😵';
 
 import type { Character } from '@corpusu/core';
+
+// Extend Character type to include possible runtime properties
+type CharacterWithRuntime = Character & {
+  engaged?: boolean;
+  currentRow?: string;
+};
 
 interface TeamAreaProps {
   team: TeamLike; // Team is loaded dynamically
@@ -34,7 +42,7 @@ function TeamArea({ team, defeated, color, emoji, label }: TeamAreaProps) {
   return (
     <Box flexDirection="column" alignItems="flex-end" marginRight={4}>
       <Text bold>{`${emoji} ${label}`}</Text>
-      {team.members.map((c: Character) => {
+      {team.members.map((c: CharacterWithRuntime) => {
         // Right-align name and HP by padding name to 20 chars, HP to 5 chars (left pad with two spaces)
         const name = c.name.padStart(20, ' ');
         const hpWidth = 5;
@@ -46,6 +54,16 @@ function TeamArea({ team, defeated, color, emoji, label }: TeamAreaProps) {
         } else {
           hpColumn = ` | HP: ${hp}`;
         }
+        // Show engaged and current row status
+        let status = '';
+        if (!defeated.has(c.name)) {
+          if (c.engaged) status += ' ⚔️';
+          if (c.currentRow && c.currentRow !== c.row) {
+            status += ` [${c.currentRow.charAt(0).toUpperCase()}]`;
+          } else {
+            status += ` [${c.row.charAt(0).toUpperCase()}]`;
+          }
+        }
         return (
           <Text
             key={c.name}
@@ -54,6 +72,7 @@ function TeamArea({ team, defeated, color, emoji, label }: TeamAreaProps) {
           >
             {name}
             {hpColumn}
+            {status}
           </Text>
         );
       })}
@@ -173,7 +192,7 @@ const App = ({ teamA, teamB, engine }: AppProps) => {
     const interval = setInterval(() => {
       updateEngine();
       if (!engine.running) clearInterval(interval);
-    }, 10);
+    }, ENGINE_INTERVAL_DELAY);
     return () => clearInterval(interval);
   }, [engine]);
 
@@ -330,7 +349,8 @@ function TeamSelection({
             <Box key={rowIdx} flexDirection="row" justifyContent="center">
               {Array.from({ length: cardsPerRow }).map((_, colIdx) => {
                 const idx = rowStart + colIdx;
-                if (idx >= end) return <Box key={colIdx} width={28} />;
+                if (idx >= end)
+                  return <Box key={colIdx} width={26} height={6} />;
                 const c = available[idx];
                 const isCursor = idx === cursor;
                 const isSelected = selected.has(c.id);
@@ -338,16 +358,23 @@ function TeamSelection({
                   <Box
                     key={c.id}
                     flexDirection="column"
-                    borderStyle={isCursor ? 'double' : 'round'}
+                    // Only horizontal borders
+                    borderStyle="single"
+                    borderTop={true}
+                    borderBottom={true}
+                    borderLeft={false}
+                    borderRight={false}
                     borderColor={
                       isSelected ? 'cyan' : isCursor ? 'yellow' : 'gray'
                     }
                     marginX={1}
-                    paddingX={2}
+                    paddingX={1}
                     paddingY={0}
-                    width={28}
-                    minHeight={5}
+                    width={26}
+                    minHeight={6}
+                    height={6}
                     backgroundColor={isCursor ? 'black' : undefined}
+                    justifyContent="flex-start"
                   >
                     <Text bold color={isSelected ? 'cyan' : undefined}>
                       {isSelected ? '●' : '○'} {c.name}{' '}
@@ -359,6 +386,12 @@ function TeamSelection({
                           : c.row === 'back'
                           ? 'B'
                           : '?'}
+                      </Text>{' '}
+                      <Text
+                        bold
+                        color={c.attackType === 'ranged' ? 'magenta' : 'green'}
+                      >
+                        {c.attackType === 'ranged' ? '⚡️' : '👊'}
                       </Text>
                     </Text>
                     <Text>

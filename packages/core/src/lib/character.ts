@@ -22,12 +22,18 @@ export const defaultHitChance: HitChanceFormula = (attacker) => {
 
 export type CharacterRow = 'front' | 'mid' | 'back';
 
+export type AttackType = 'melee' | 'ranged';
+
 export class Character {
   public hp: number;
   public readonly maxHp: number;
   private attackBar = 0;
   public readonly id: string;
   public readonly row: CharacterRow;
+  public currentRow: CharacterRow;
+  public distanceToEnemy = 0;
+  public readonly attackType: AttackType;
+  public engaged = false;
   public readonly getDamage: DamageFormula;
   public readonly getHitChance: HitChanceFormula;
 
@@ -36,6 +42,7 @@ export class Character {
     name: string,
     stats: Stats,
     row: CharacterRow,
+    attackType: AttackType,
     initialHp = 100,
     getDamage: DamageFormula = defaultGetDamage,
     getHitChance: HitChanceFormula = defaultHitChance
@@ -44,11 +51,16 @@ export class Character {
     this.name = name;
     this.stats = stats;
     this.row = row;
+    this.currentRow = row;
+    this.attackType = attackType;
     // Ensure HP is a positive integer and capped at a reasonable max (e.g., 9999)
     this.maxHp = Math.max(1, Math.min(initialHp, 9999));
     this.hp = this.maxHp;
     this.getDamage = getDamage;
     this.getHitChance = getHitChance;
+  }
+  get defeated(): boolean {
+    return this.hp <= 0;
   }
 
   public readonly name: string;

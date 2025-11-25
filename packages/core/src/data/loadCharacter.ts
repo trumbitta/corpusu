@@ -14,6 +14,7 @@ export const CharacterDataSchema = z.object({
   hp: z.number().int().positive(),
   stats: StatsSchema,
   row: z.enum(['front', 'mid', 'back']).optional(),
+  attackType: z.enum(['melee', 'ranged']).optional(),
 });
 
 export async function loadCharacterFromFile(
@@ -37,6 +38,7 @@ export async function loadCharacterFromFile(
     parsed.name,
     parsed.stats,
     parsed.row ?? 'front',
+    parsed.attackType ?? 'melee',
     parsed.hp
   );
 }

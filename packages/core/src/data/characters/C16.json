@@ -8,5 +8,6 @@
     "speed": 1.0,
     "defense": 4
   },
-  "row": "back"
+  "row": "back",
+  "attackType": "melee"
 }

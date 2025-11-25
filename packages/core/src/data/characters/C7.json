@@ -8,5 +8,6 @@
     "speed": 1.2,
     "defense": 3
   },
-  "row": "front"
+  "row": "front",
+  "attackType": "ranged"
 }
