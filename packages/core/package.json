@@ -22,7 +22,6 @@
     "name": "core"
   },
   "dependencies": {
-    "rollup-plugin-node-externals": "^8.1.2",
     "zod": "^4.1.12"
   }
 }

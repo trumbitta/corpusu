@@ -5,20 +5,32 @@ import { CombatEngine, CombatEvent } from './engine.js';
 describe('CombatEngine', () => {
   it('should initialize with two teams', () => {
     const teamA = new Team('Heroes', [
-      new Character('Hero1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 1,
-        defense: 5,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
     ]);
     const teamB = new Team('Enemies', [
-      new Character('Enemy1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 1,
-        defense: 5,
-      }),
+      new Character(
+        'E1',
+        'Enemy1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
     ]);
 
     const engine = new CombatEngine(teamA, teamB);
@@ -30,20 +42,32 @@ describe('CombatEngine', () => {
 
   it('should emit events when combat occurs', (context) => {
     const teamA = new Team('Heroes', [
-      new Character('Hero1', {
-        attack: 20,
-        dexterity: 1.0,
-        speed: 100,
-        defense: 5,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 20,
+          dexterity: 1.0,
+          speed: 100,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
     ]);
     const teamB = new Team('Enemies', [
-      new Character('Enemy1', {
-        attack: 10,
-        dexterity: 1.0,
-        speed: 1,
-        defense: 5,
-      }),
+      new Character(
+        'E1',
+        'Enemy1',
+        {
+          attack: 10,
+          dexterity: 1.0,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
     ]);
 
     const engine = new CombatEngine(teamA, teamB);
@@ -60,20 +84,32 @@ describe('CombatEngine', () => {
 
   it('should stop running when a team is defeated', () => {
     const teamA = new Team('Heroes', [
-      new Character('Hero1', {
-        attack: 100,
-        dexterity: 1.0,
-        speed: 100,
-        defense: 5,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 100,
+          dexterity: 1.0,
+          speed: 100,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
     ]);
     const teamB = new Team('Enemies', [
-      new Character('Enemy1', {
-        attack: 1,
-        dexterity: 1.0,
-        speed: 1,
-        defense: 1,
-      }),
+      new Character(
+        'E1',
+        'Enemy1',
+        {
+          attack: 1,
+          dexterity: 1.0,
+          speed: 1,
+          defense: 1,
+        },
+        'front',
+        'melee'
+      ),
     ]);
 
     const engine = new CombatEngine(teamA, teamB);
@@ -95,20 +131,32 @@ describe('CombatEngine', () => {
 
   it('should update character attack bars', () => {
     const teamA = new Team('Heroes', [
-      new Character('Hero1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 10,
-        defense: 5,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 10,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
     ]);
     const teamB = new Team('Enemies', [
-      new Character('Enemy1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 1,
-        defense: 5,
-      }),
+      new Character(
+        'E1',
+        'Enemy1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
     ]);
 
     const engine = new CombatEngine(teamA, teamB);

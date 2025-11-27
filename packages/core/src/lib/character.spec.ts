@@ -1,15 +1,23 @@
 import { describe, it, expect } from 'vitest';
-import { Character, getDamage } from './character.js';
+import { Character, defaultGetDamage } from './character.js';
 
-describe('getDamage', () => {
+describe('defaultGetDamage', () => {
   it('should calculate damage correctly', () => {
-    expect(getDamage(10, 4)).toBe(8);
-    expect(getDamage(10, 10)).toBe(5);
-    expect(getDamage(5, 10)).toBe(0);
+    const attacker = { attack: 10, dexterity: 0.8, speed: 1, defense: 0 };
+    const defender = { attack: 0, dexterity: 0, speed: 0, defense: 4 };
+    expect(defaultGetDamage(attacker, defender)).toBe(8);
+
+    const defender2 = { attack: 0, dexterity: 0, speed: 0, defense: 10 };
+    expect(defaultGetDamage(attacker, defender2)).toBe(5);
+
+    const attacker2 = { attack: 5, dexterity: 0.8, speed: 1, defense: 0 };
+    expect(defaultGetDamage(attacker2, defender2)).toBe(0);
   });
 
   it('should never return negative damage', () => {
-    expect(getDamage(1, 100)).toBe(0);
+    const attacker = { attack: 1, dexterity: 0.8, speed: 1, defense: 0 };
+    const defender = { attack: 0, dexterity: 0, speed: 0, defense: 100 };
+    expect(defaultGetDamage(attacker, defender)).toBe(0);
   });
 });
 
@@ -24,6 +32,8 @@ describe('Character', () => {
         speed: 1.5,
         defense: 5,
       },
+      'front',
+      'melee',
       150
     );
 
@@ -35,12 +45,18 @@ describe('Character', () => {
   });
 
   it('should update attack bar based on speed', () => {
-    const char = new Character('T2', 'Hero', {
-      attack: 10,
-      dexterity: 0.8,
-      speed: 10,
-      defense: 5,
-    });
+    const char = new Character(
+      'T2',
+      'Hero',
+      {
+        attack: 10,
+        dexterity: 0.8,
+        speed: 10,
+        defense: 5,
+      },
+      'front',
+      'melee'
+    );
 
     expect(char.canAttack()).toBe(false);
     char.update(10);
@@ -57,6 +73,8 @@ describe('Character', () => {
         speed: 10,
         defense: 5,
       },
+      'front',
+      'melee',
       80
     );
 
@@ -66,18 +84,30 @@ describe('Character', () => {
   });
 
   it('should reset attack bar after performing attack', () => {
-    const attacker = new Character('T4', 'Attacker', {
-      attack: 10,
-      dexterity: 1.0,
-      speed: 10,
-      defense: 5,
-    });
-    const target = new Character('T5', 'Target', {
-      attack: 10,
-      dexterity: 0.8,
-      speed: 1,
-      defense: 5,
-    });
+    const attacker = new Character(
+      'T4',
+      'Attacker',
+      {
+        attack: 10,
+        dexterity: 1.0,
+        speed: 10,
+        defense: 5,
+      },
+      'front',
+      'melee'
+    );
+    const target = new Character(
+      'T5',
+      'Target',
+      {
+        attack: 10,
+        dexterity: 0.8,
+        speed: 1,
+        defense: 5,
+      },
+      'front',
+      'melee'
+    );
 
     attacker.update(10);
     expect(attacker.canAttack()).toBe(true);
@@ -86,18 +116,30 @@ describe('Character', () => {
   });
 
   it('should reduce target HP on successful attack', () => {
-    const attacker = new Character('T6', 'Attacker', {
-      attack: 20,
-      dexterity: 1.0,
-      speed: 10,
-      defense: 5,
-    });
-    const target = new Character('T7', 'Target', {
-      attack: 10,
-      dexterity: 0.8,
-      speed: 1,
-      defense: 5,
-    });
+    const attacker = new Character(
+      'T6',
+      'Attacker',
+      {
+        attack: 20,
+        dexterity: 1.0,
+        speed: 10,
+        defense: 5,
+      },
+      'front',
+      'melee'
+    );
+    const target = new Character(
+      'T7',
+      'Target',
+      {
+        attack: 10,
+        dexterity: 0.8,
+        speed: 1,
+        defense: 5,
+      },
+      'front',
+      'melee'
+    );
 
     const initialHp = target.hp;
     attacker.performAttack(target);

@@ -2,7 +2,6 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
-import nodeExternals from 'rollup-plugin-node-externals';
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -38,7 +37,6 @@ export default defineConfig(() => ({
     rollupOptions: {
       // External packages that should not be bundled into your library.
       external: ['path', 'node:path', 'fs', 'zod'],
-      plugins: [nodeExternals()],
     },
   },
   test: {
