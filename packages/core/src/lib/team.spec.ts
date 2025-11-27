@@ -5,18 +5,30 @@ import { Team } from './team.js';
 describe('Team', () => {
   it('should initialize with correct properties', () => {
     const members = [
-      new Character('Hero1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 1,
-        defense: 5,
-      }),
-      new Character('Hero2', {
-        attack: 12,
-        dexterity: 0.7,
-        speed: 1.2,
-        defense: 4,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
+      new Character(
+        'H2',
+        'Hero2',
+        {
+          attack: 12,
+          dexterity: 0.7,
+          speed: 1.2,
+          defense: 4,
+        },
+        'front',
+        'melee'
+      ),
     ];
     const team = new Team('Heroes', members);
 
@@ -26,18 +38,30 @@ describe('Team', () => {
 
   it('should return all alive members', () => {
     const members = [
-      new Character('Hero1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 1,
-        defense: 5,
-      }),
-      new Character('Hero2', {
-        attack: 12,
-        dexterity: 0.7,
-        speed: 1.2,
-        defense: 4,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
+      new Character(
+        'H2',
+        'Hero2',
+        {
+          attack: 12,
+          dexterity: 0.7,
+          speed: 1.2,
+          defense: 4,
+        },
+        'front',
+        'melee'
+      ),
     ];
     const team = new Team('Heroes', members);
 
@@ -48,18 +72,30 @@ describe('Team', () => {
 
   it('should be defeated when all members are defeated', () => {
     const members = [
-      new Character('Hero1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 1,
-        defense: 5,
-      }),
-      new Character('Hero2', {
-        attack: 12,
-        dexterity: 0.7,
-        speed: 1.2,
-        defense: 4,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
+      new Character(
+        'H2',
+        'Hero2',
+        {
+          attack: 12,
+          dexterity: 0.7,
+          speed: 1.2,
+          defense: 4,
+        },
+        'front',
+        'melee'
+      ),
     ];
     const team = new Team('Heroes', members);
 
@@ -72,18 +108,30 @@ describe('Team', () => {
 
   it('should not be defeated when at least one member is alive', () => {
     const members = [
-      new Character('Hero1', {
-        attack: 10,
-        dexterity: 0.8,
-        speed: 1,
-        defense: 5,
-      }),
-      new Character('Hero2', {
-        attack: 12,
-        dexterity: 0.7,
-        speed: 1.2,
-        defense: 4,
-      }),
+      new Character(
+        'H1',
+        'Hero1',
+        {
+          attack: 10,
+          dexterity: 0.8,
+          speed: 1,
+          defense: 5,
+        },
+        'front',
+        'melee'
+      ),
+      new Character(
+        'H2',
+        'Hero2',
+        {
+          attack: 12,
+          dexterity: 0.7,
+          speed: 1.2,
+          defense: 4,
+        },
+        'front',
+        'melee'
+      ),
     ];
     const team = new Team('Heroes', members);
 
