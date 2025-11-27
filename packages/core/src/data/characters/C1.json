@@ -1,0 +1,13 @@
+{
+  "id": "C1",
+  "name": "Arion",
+  "hp": 120,
+  "stats": {
+    "attack": 10,
+    "dexterity": 0.8,
+    "speed": 1,
+    "defense": 4
+  },
+  "row": "front",
+  "attackType": "melee"
+}

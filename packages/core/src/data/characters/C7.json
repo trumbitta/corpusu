@@ -1,0 +1,13 @@
+{
+  "id": "C7",
+  "name": "Vexis",
+  "hp": 95,
+  "stats": {
+    "attack": 12,
+    "dexterity": 0.7,
+    "speed": 1.2,
+    "defense": 3
+  },
+  "row": "front",
+  "attackType": "ranged"
+}

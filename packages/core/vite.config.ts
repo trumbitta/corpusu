@@ -32,11 +32,11 @@ export default defineConfig(() => ({
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
-      formats: ['es' as const],
+      formats: ['es' as const, 'cjs' as const],
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: [],
+      external: ['path', 'node:path', 'fs', 'zod'],
     },
   },
   test: {

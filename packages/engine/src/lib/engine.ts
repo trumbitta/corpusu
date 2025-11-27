@@ -4,7 +4,7 @@ import { Character, Team } from '@corpusu/core';
 export type CombatEvent =
   | { type: 'hit'; attacker: Character; target: Character; damage: number }
   | { type: 'miss'; attacker: Character; target: Character }
-  | { type: 'death'; character: Character }
+  | { type: 'defeat'; character: Character }
   | { type: 'teamDefeated'; team: Team };
 
 export class CombatEngine {
@@ -37,7 +37,7 @@ export class CombatEngine {
       else this.events$.next({ type: 'miss', attacker: c, target });
 
       if (target.hp <= 0)
-        this.events$.next({ type: 'death', character: target });
+        this.events$.next({ type: 'defeat', character: target });
     }
 
     if (this.teamA.isDefeated) {

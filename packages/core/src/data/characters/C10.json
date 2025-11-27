@@ -1,0 +1,13 @@
+{
+  "id": "C10",
+  "name": "Krynn",
+  "hp": 90,
+  "stats": {
+    "attack": 11,
+    "dexterity": 0.8,
+    "speed": 1,
+    "defense": 2
+  },
+  "row": "mid",
+  "attackType": "melee"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "C14",
+  "name": "Bramm",
+  "hp": 120,
+  "stats": {
+    "attack": 11,
+    "dexterity": 0.6,
+    "speed": 0.9,
+    "defense": 4
+  },
+  "row": "mid",
+  "attackType": "melee"
+}

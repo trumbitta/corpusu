@@ -1,0 +1,13 @@
+{
+  "id": "C8",
+  "name": "Zarnok",
+  "hp": 80,
+  "stats": {
+    "attack": 8,
+    "dexterity": 0.9,
+    "speed": 0.9,
+    "defense": 2
+  },
+  "row": "mid",
+  "attackType": "melee"
+}

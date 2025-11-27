@@ -1,0 +1,13 @@
+{
+  "id": "C2",
+  "name": "Lyra",
+  "hp": 90,
+  "stats": {
+    "attack": 12,
+    "dexterity": 0.7,
+    "speed": 1.2,
+    "defense": 3
+  },
+  "row": "front",
+  "attackType": "ranged"
+}

@@ -1,19 +1,70 @@
-export type Stats = {
-  attack: number;
-  dexterity: number;
-  speed: number;
-  defense: number;
+import { z } from 'zod';
+
+export const StatsSchema = z.object({
+  attack: z.number(),
+  dexterity: z.number(),
+  speed: z.number(),
+  defense: z.number(),
+});
+
+export type Stats = z.infer<typeof StatsSchema>;
+
+export type DamageFormula = (attacker: Stats, defender: Stats) => number;
+export type HitChanceFormula = (attacker: Stats, defender: Stats) => number;
+
+export const defaultGetDamage: DamageFormula = (attacker, defender) => {
+  return Math.max(0, attacker.attack - Math.floor(defender.defense * 0.5));
 };
 
-export function getDamage(attack: number, defense: number) {
-  return Math.max(0, attack - Math.floor(defense * 0.5));
-}
+export const defaultHitChance: HitChanceFormula = (attacker) => {
+  return attacker.dexterity;
+};
+
+export type CharacterRow = 'front' | 'mid' | 'back';
+
+export type AttackType = 'melee' | 'ranged';
 
 export class Character {
-  hp = 100;
+  public hp: number;
+  public readonly maxHp: number;
   private attackBar = 0;
+  public readonly id: string;
+  public readonly row: CharacterRow;
+  public currentRow: CharacterRow;
+  public distanceToEnemy = 0;
+  public readonly attackType: AttackType;
+  public engaged = false;
+  public readonly getDamage: DamageFormula;
+  public readonly getHitChance: HitChanceFormula;
 
-  constructor(public name: string, public stats: Stats) {}
+  constructor(
+    id: string,
+    name: string,
+    stats: Stats,
+    row: CharacterRow,
+    attackType: AttackType,
+    initialHp = 100,
+    getDamage: DamageFormula = defaultGetDamage,
+    getHitChance: HitChanceFormula = defaultHitChance
+  ) {
+    this.id = id;
+    this.name = name;
+    this.stats = stats;
+    this.row = row;
+    this.currentRow = row;
+    this.attackType = attackType;
+    // Ensure HP is a positive integer and capped at a reasonable max (e.g., 9999)
+    this.maxHp = Math.max(1, Math.min(initialHp, 9999));
+    this.hp = this.maxHp;
+    this.getDamage = getDamage;
+    this.getHitChance = getHitChance;
+  }
+  get defeated(): boolean {
+    return this.hp <= 0;
+  }
+
+  public readonly name: string;
+  public readonly stats: Stats;
 
   update(delta: number) {
     this.attackBar += this.stats.speed * delta;
@@ -25,11 +76,12 @@ export class Character {
 
   performAttack(target: Character): { hit: boolean; damage: number } {
     this.attackBar = 0;
-    const hit = Math.random() < this.stats.dexterity;
+    const hitChance = this.getHitChance(this.stats, target.stats);
+    const hit = Math.random() < hitChance;
     let damage = 0;
 
     if (hit) {
-      damage = getDamage(this.stats.attack, target.stats.defense);
+      damage = this.getDamage(this.stats, target.stats);
       target.hp = Math.max(0, target.hp - damage);
     }
 

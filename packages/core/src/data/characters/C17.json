@@ -1,0 +1,13 @@
+{
+  "id": "C17",
+  "name": "Selene",
+  "hp": 90,
+  "stats": {
+    "attack": 13,
+    "dexterity": 0.7,
+    "speed": 1.2,
+    "defense": 2
+  },
+  "row": "back",
+  "attackType": "ranged"
+}
