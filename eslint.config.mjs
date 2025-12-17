@@ -1,46 +1,24 @@
-import nx from '@nx/eslint-plugin';
+import js from '@eslint/js';
+import eslintPluginTypescript from 'typescript-eslint';
+import eslintPluginPrettier from 'eslint-config-prettier';
 
 export default [
-  ...nx.configs['flat/base'],
-  ...nx.configs['flat/typescript'],
-  ...nx.configs['flat/javascript'],
   {
-    ignores: [
-      '**/dist',
-      '**/vite.config.*.timestamp*',
-      '**/vitest.config.*.timestamp*',
-    ],
+    ignores: ['dist', 'node_modules', '.nx', 'out-tsc'],
   },
+  js.configs.recommended,
+  ...eslintPluginTypescript.configs.recommended,
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
-      '@nx/enforce-module-boundaries': [
+      '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
-          depConstraints: [
-            {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
-            },
-          ],
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
         },
       ],
     },
   },
-  {
-    files: [
-      '**/*.ts',
-      '**/*.tsx',
-      '**/*.cts',
-      '**/*.mts',
-      '**/*.js',
-      '**/*.jsx',
-      '**/*.cjs',
-      '**/*.mjs',
-    ],
-    // Override or add rules here
-    rules: {},
-  },
+  eslintPluginPrettier,
 ];

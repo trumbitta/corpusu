@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { Character, Team } from '@corpusu/core';
+import { Character, Team } from '../../core/index.js';
 
 export type CombatEvent =
   | { type: 'hit'; attacker: Character; target: Character; damage: number }

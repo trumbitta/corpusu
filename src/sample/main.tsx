@@ -6,7 +6,7 @@ type TeamLike = {
   isDefeated: boolean;
 };
 
-import { CombatEngine } from '@corpusu/engine';
+import { CombatEngine } from '../engine/index.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
@@ -22,7 +22,7 @@ const TEAM_A_EMOJI = '🟥';
 const TEAM_B_EMOJI = '🟦';
 const DEFEATED_EMOJI = '😵';
 
-import type { Character } from '@corpusu/core';
+import type { Character } from '../core/index.js';
 
 // Extend Character type to include possible runtime properties
 type CharacterWithRuntime = Character & {
@@ -373,7 +373,6 @@ function TeamSelection({
                     width={26}
                     minHeight={6}
                     height={6}
-                    backgroundColor={isCursor ? 'black' : undefined}
                     justifyContent="flex-start"
                   >
                     <Text bold color={isSelected ? 'cyan' : undefined}>
@@ -451,7 +450,7 @@ function GameFlow({ allCharacters }: { allCharacters: Character[] }) {
     const shuffled = shuffle(allCharacters);
     setCpuTeam(shuffled.slice(0, cpuTeamSize));
     // Dynamically import Team class
-    import('@corpusu/core').then((mod) => setTeamClass(() => mod.Team));
+    import('../core/index.js').then((mod) => setTeamClass(() => mod.Team));
   }, [allCharacters]);
 
   if (phase === 'select' || !TeamClass) {
@@ -488,7 +487,7 @@ function GameFlow({ allCharacters }: { allCharacters: Character[] }) {
 }
 
 async function main() {
-  const core = await import('@corpusu/core');
+  const core = await import('../core/index.js');
   const { loadCharactersFromFolder } = core;
   const allCharacters = await loadCharactersFromFolder(
     path.resolve(__dirname, 'characters')

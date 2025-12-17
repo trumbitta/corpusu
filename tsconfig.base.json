@@ -8,6 +8,7 @@
     "lib": ["es2022"],
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "jsx": "react-jsx",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -15,7 +16,6 @@
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es2022",
-    "customConditions": ["development"]
+    "target": "es2022"
   }
 }
