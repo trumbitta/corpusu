@@ -1,4 +1,9 @@
-import { Character, CharacterRow, CharacterColumn, AttackType } from './character.js';
+import {
+  Character,
+  CharacterRow,
+  CharacterColumn,
+  AttackType,
+} from './character.js';
 import { Team } from './team.js';
 
 export type Engagement = {
