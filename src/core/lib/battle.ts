@@ -1,4 +1,4 @@
-import { Character, CharacterRow, AttackType } from './character.js';
+import { Character, CharacterRow, CharacterColumn, AttackType } from './character.js';
 import { Team } from './team.js';
 
 export type Engagement = {
@@ -37,11 +37,13 @@ export class Battle {
               (e: Character) => !e.engaged
             );
             if (targets.length === 0) continue;
-            // Find closest row
+            // Find closest target by row + column distance
             let minDist = Infinity;
             let closest: Character | null = null;
             for (const e of targets) {
-              const dist = Battle.rowDistance(c.currentRow, e.currentRow);
+              const dist =
+                Battle.rowDistance(c.currentRow, e.currentRow) +
+                Battle.columnDistance(c.currentColumn, e.currentColumn);
               if (dist < minDist) {
                 minDist = dist;
                 closest = e;
@@ -49,10 +51,28 @@ export class Battle {
             }
             if (closest) {
               // Move toward enemy (reduce distance)
-              if (minDist > 0) {
-                // Move one row closer per tick (could be speed-based)
-                // For now, just snap to closest row for simplicity
-                c.currentRow = closest.currentRow;
+              // Move one row closer if different
+              if (Battle.rowDistance(c.currentRow, closest.currentRow) > 0) {
+                const order: Record<CharacterRow, number> = {
+                  front: 0,
+                  mid: 1,
+                  back: 2,
+                };
+                const rows: CharacterRow[] = ['front', 'mid', 'back'];
+                const targetRowIdx = order[closest.currentRow];
+                const currentRowIdx = order[c.currentRow];
+                c.currentRow =
+                  rows[currentRowIdx + (targetRowIdx > currentRowIdx ? 1 : -1)];
+              }
+              // Move one column closer if different
+              if (
+                Battle.columnDistance(c.currentColumn, closest.currentColumn) >
+                0
+              ) {
+                const newCol =
+                  c.currentColumn +
+                  (closest.currentColumn > c.currentColumn ? 1 : -1);
+                c.currentColumn = newCol as CharacterColumn;
               }
             }
           }
@@ -86,13 +106,11 @@ export class Battle {
             if (c.attackType === 'melee') {
               target.engaged = true;
             }
-            // If target is defeated, ranged attackers can retarget next tick
+            // If target is defeated, both melee and ranged can retarget next tick
             if (hit && target.hp <= 0) {
               target.hp = 0;
               target.engaged = false;
-              if (c.attackType === 'ranged') {
-                c.engaged = false; // Ranged can resume moving/attacking next tick
-              }
+              c.engaged = false; // Allow both melee and ranged to find new targets
             }
           }
         }
