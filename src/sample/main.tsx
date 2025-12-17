@@ -11,6 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { useEffect, useState } from 'react';
+import type { CharacterRow } from '../core/index.js';
 // Milliseconds between engine update ticks (controls real-time battle speed)
 const ENGINE_INTERVAL_DELAY = 100;
 import { render, Box, Text } from 'ink';
@@ -125,6 +126,76 @@ interface AppProps {
   engine: CombatEngine;
 }
 
+// 3x3 battle grid visualization (3 rows x 3 columns)
+function BattleGrid({ teamA, teamB }: { teamA: TeamLike; teamB: TeamLike }) {
+  const rowLabels = ['Front', 'Mid', 'Back'];
+  const rowKeys: CharacterRow[] = ['front', 'mid', 'back'];
+
+  // Build a map of position -> character(s)
+  const gridMap: Record<string, CharacterWithRuntime[]> = {};
+  for (const row of rowKeys) {
+    for (let col = 0; col < 3; col++) {
+      gridMap[`${row}-${col}`] = [];
+    }
+  }
+
+  for (const team of [teamA, teamB]) {
+    for (const c of team.members) {
+      if (!c.defeated) {
+        const key = `${c.currentRow}-${c.currentColumn}`;
+        if (gridMap[key]) gridMap[key].push(c);
+      }
+    }
+  }
+
+  return (
+    <Box
+      flexDirection="column"
+      marginY={1}
+      borderStyle="double"
+      borderColor="cyan"
+      padding={1}
+    >
+      <Text color="cyan" bold>
+        ⚔ Battle Grid ⚔
+      </Text>
+      {rowKeys.map((row, rowIdx) => (
+        <Box key={row} flexDirection="row">
+          <Box width={6} paddingRight={1}>
+            <Text color="blue" bold>
+              {rowLabels[rowIdx]}
+            </Text>
+          </Box>
+          {[0, 1, 2].map((col) => {
+            const key = `${row}-${col}`;
+            const chars = gridMap[key] || [];
+            const cellContent =
+              chars.length > 0
+                ? chars
+                    .map((c) => {
+                      const emoji = c.name.includes(teamA.name) ? '🔴' : '🔵';
+                      return `${emoji}${c.name.substring(0, 3)}`;
+                    })
+                    .join('|')
+                : '·';
+            return (
+              <Box
+                key={`${row}-${col}`}
+                width={16}
+                borderStyle="single"
+                borderColor="gray"
+                paddingX={1}
+              >
+                <Text>{cellContent}</Text>
+              </Box>
+            );
+          })}
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
 const App = ({ teamA, teamB, engine }: AppProps) => {
   const [events, setEvents] = useState<string[]>([]);
   const [defeated, setDefeated] = useState<Set<string>>(new Set());
@@ -219,6 +290,7 @@ const App = ({ teamA, teamB, engine }: AppProps) => {
           label="Team B"
         />
       </Box>
+      <BattleGrid teamA={teamA} teamB={teamB} />
       <EventLog events={events} />
     </Box>
   );
