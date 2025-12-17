@@ -4,9 +4,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug sample with Nx",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "sample"],
+      "name": "Debug sample (built)",
+      "program": "${workspaceFolder}/dist/main.js",
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
       },
@@ -14,10 +13,7 @@
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/packages/sample/dist/**/*.(m|c|)js",
-        "!**/node_modules/**"
-      ]
+      "outFiles": ["${workspaceFolder}/dist/**/*.js", "!**/node_modules/**"]
     }
   ]
 }

@@ -4,7 +4,7 @@ import eslintPluginPrettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist', 'node_modules', '.nx', 'out-tsc'],
+    ignores: ['dist', 'node_modules', 'out-tsc'],
   },
   js.configs.recommended,
   ...eslintPluginTypescript.configs.recommended,
