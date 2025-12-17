@@ -25,6 +25,7 @@ import type { Character } from '../core/index.js';
 type CharacterWithRuntime = Character & {
   engaged?: boolean;
   currentRow?: string;
+  emoji?: string;
 };
 
 interface TeamAreaProps {
@@ -135,11 +136,17 @@ function BattleGrid({ teamA, teamB }: { teamA: TeamLike; teamB: TeamLike }) {
     }
   }
 
+  // Track team membership for coloring
+  const teamAIds = new Set(teamA.members.map((c) => c.id));
+
   for (const team of [teamA, teamB]) {
     for (const c of team.members) {
       if (!c.defeated) {
         const key = `${c.currentRow}-${c.currentColumn}`;
-        if (gridMap[key]) gridMap[key].push(c);
+        if (gridMap[key]) {
+          const emoji = teamAIds.has(c.id) ? '🔴' : '🔵';
+          gridMap[key].push({ ...c, emoji } as CharacterWithRuntime);
+        }
       }
     }
   }
@@ -169,7 +176,7 @@ function BattleGrid({ teamA, teamB }: { teamA: TeamLike; teamB: TeamLike }) {
               chars.length > 0
                 ? chars
                     .map((c) => {
-                      const emoji = c.name.includes(teamA.name) ? '🔴' : '🔵';
+                      const emoji = teamAIds.has(c.id) ? '🔴' : '🔵';
                       return `${emoji}${c.name.substring(0, 3)}`;
                     })
                     .join('|')
