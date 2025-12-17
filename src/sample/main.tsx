@@ -245,6 +245,19 @@ function TeamSelection({
   const [confirmed, setConfirmed] = useState(false);
   const [confirmExit, setConfirmExit] = useState(false);
 
+  // Helper to calculate placement and check if adding a character would exceed row limits
+  const canAddCharacter = (newSelected: Set<string>): boolean => {
+    const selectedChars = available.filter((c) => newSelected.has(c.id));
+    const rowCounts = { front: 0, mid: 0, back: 0 };
+    for (const c of selectedChars) {
+      rowCounts[c.row as keyof typeof rowCounts]++;
+      if (rowCounts[c.row as keyof typeof rowCounts] > 3) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   useInput((input, key) => {
     if (confirmExit) {
       if (key.escape) {
@@ -311,7 +324,11 @@ function TeamSelection({
         if (next.has(id)) {
           next.delete(id);
         } else if (next.size < teamSize) {
+          // Check if adding this character would exceed row limits
           next.add(id);
+          if (!canAddCharacter(next)) {
+            next.delete(id);
+          }
         }
         return next;
       });
