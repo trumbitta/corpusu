@@ -16,6 +16,10 @@ export class Battle {
     return Math.abs(order[a] - order[b]);
   }
 
+  static columnDistance(a: number, b: number): number {
+    return Math.abs(a - b);
+  }
+
   // Main real-time tick
   tick(delta: number) {
     // Update all characters' attack bars and movement
@@ -63,10 +67,14 @@ export class Battle {
           if (possibleTargets.length === 0) {
             possibleTargets = enemyTeam.alive;
           }
-          // For melee, must be in same row
+          // For melee, must be in same row AND column
           let target: Character | undefined;
           if (c.attackType === 'melee') {
-            target = possibleTargets.find((e) => e.currentRow === c.currentRow);
+            target = possibleTargets.find(
+              (e) =>
+                e.currentRow === c.currentRow &&
+                e.currentColumn === c.currentColumn
+            );
           } else {
             // Ranged: prefer unengaged, fallback to any
             target =

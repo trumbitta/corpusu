@@ -237,7 +237,7 @@ function TeamSelection({
 }) {
   // Interactive multi-select state
   const teamSize = 5;
-  const cardsPerRow = 4;
+  const cardsPerRow = 3;
   const visibleRows = 2;
   const [cursor, setCursor] = useState(0);
   const [windowStartRow, setWindowStartRow] = useState(0);
