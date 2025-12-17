@@ -24,7 +24,17 @@ export default defineConfig(() => ({
       formats: ['es' as const, 'cjs' as const],
     },
     rollupOptions: {
-      external: ['path', 'node:path', 'fs', 'zod', 'rxjs', 'react', 'react-dom', 'ink', 'ink-big-text'],
+      external: [
+        'path',
+        'node:path',
+        'fs',
+        'zod',
+        'rxjs',
+        'react',
+        'react-dom',
+        'ink',
+        'ink-big-text',
+      ],
     },
   },
 }));

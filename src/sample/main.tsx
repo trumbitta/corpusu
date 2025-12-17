@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 // Milliseconds between engine update ticks (controls real-time battle speed)
 const ENGINE_INTERVAL_DELAY = 100;
 import { render, Box, Text } from 'ink';
-import BigText from 'ink-big-text';
+import BigText from './ink-big-text-shim.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -489,9 +489,15 @@ function GameFlow({ allCharacters }: { allCharacters: Character[] }) {
 async function main() {
   const core = await import('../core/index.js');
   const { loadCharactersFromFolder } = core;
-  const allCharacters = await loadCharactersFromFolder(
-    path.resolve(__dirname, 'characters')
+  // Use process.cwd() to get the workspace root, then resolve the characters path
+  const characterPath = path.resolve(
+    process.cwd(),
+    'src',
+    'core',
+    'data',
+    'characters'
   );
+  const allCharacters = await loadCharactersFromFolder(characterPath);
   render(<GameFlow allCharacters={allCharacters} />);
 }
 
