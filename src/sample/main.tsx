@@ -8,16 +8,12 @@ type TeamLike = {
 
 import { CombatEngine } from '../engine/index.js';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 import { useEffect, useState } from 'react';
 import type { CharacterRow } from '../core/index.js';
 // Milliseconds between engine update ticks (controls real-time battle speed)
 const ENGINE_INTERVAL_DELAY = 100;
 import { render, Box, Text } from 'ink';
 import BigText from './ink-big-text-shim.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const TEAM_A_EMOJI = '🟥';
 const TEAM_B_EMOJI = '🟦';
@@ -93,7 +89,7 @@ function EventLog({ events }: { events: string[] }) {
         : null;
     return (
       <Box flexDirection="column" alignItems="center" marginTop={2}>
-        <BigText text={last} font="block" />
+        <BigText text={last} />
         {shoutout && (
           <Text color="cyan" bold>
             {' '.repeat(4)}

@@ -37,6 +37,10 @@ export class Team {
         columnCounts[row][2]++;
       }
 
+      // Sync currentRow and currentColumn to the assigned position
+      c.currentRow = c.row;
+      c.currentColumn = c.column;
+
       rowCounts[c.row] = (rowCounts[c.row] || 0) + 1;
       if (rowCounts[c.row] > 3) {
         throw new Error(
