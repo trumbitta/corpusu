@@ -37,21 +37,34 @@ export class Battle {
           c.update(delta);
           // Movement logic for melee
           if (c.attackType === 'melee') {
-            // Find nearest enemy (prefer unengaged)
-            const targets: Character[] = enemyTeam.alive.filter(
+            // Find nearest unengaged enemy
+            const unengagedTargets: Character[] = enemyTeam.alive.filter(
               (e: Character) => !e.engaged
             );
-            if (targets.length === 0) continue;
-            // Find closest target by row + column distance
-            let minDist = Infinity;
             let closest: Character | null = null;
-            for (const e of targets) {
-              const dist =
-                Battle.rowDistance(c.currentRow, e.currentRow) +
-                Battle.columnDistance(c.currentColumn, e.currentColumn);
-              if (dist < minDist) {
-                minDist = dist;
-                closest = e;
+            if (unengagedTargets.length > 0) {
+              // Find closest unengaged target by row + column distance
+              let minDist = Infinity;
+              for (const e of unengagedTargets) {
+                const dist =
+                  Battle.rowDistance(c.currentRow, e.currentRow) +
+                  Battle.columnDistance(c.currentColumn, e.currentColumn);
+                if (dist < minDist) {
+                  minDist = dist;
+                  closest = e;
+                }
+              }
+            } else {
+              // If no unengaged targets, find closest enemy period (even if engaged)
+              let minDist = Infinity;
+              for (const e of enemyTeam.alive) {
+                const dist =
+                  Battle.rowDistance(c.currentRow, e.currentRow) +
+                  Battle.columnDistance(c.currentColumn, e.currentColumn);
+                if (dist < minDist) {
+                  minDist = dist;
+                  closest = e;
+                }
               }
             }
             if (closest) {

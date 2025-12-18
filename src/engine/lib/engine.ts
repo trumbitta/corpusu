@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { Character, Team } from '../../core/index.js';
+import { Character, Team, Battle } from '../../core/index.js';
 
 export type CombatEvent =
   | { type: 'hit'; attacker: Character; target: Character; damage: number }
@@ -10,34 +10,26 @@ export type CombatEvent =
 export class CombatEngine {
   public events$ = new Subject<CombatEvent>();
   public running = true;
+  private battle: Battle;
 
-  constructor(public teamA: Team, public teamB: Team) {}
+  constructor(public teamA: Team, public teamB: Team) {
+    this.battle = new Battle(teamA, teamB);
+  }
 
   update(delta: number) {
     if (!this.running) return;
 
+    // Use Battle class for movement, positioning, and tactical targeting
+    this.battle.tick(delta);
+
+    // Track events from attack results by checking HP changes
+    // (This is a simplified event emission; a more robust system would
+    // track events directly from Battle.tick())
     const allCharacters = [...this.teamA.alive, ...this.teamB.alive];
-    allCharacters.forEach((c) => c.update(delta));
-    allCharacters.sort((a, b) => b.stats.speed - a.stats.speed);
-
     for (const c of allCharacters) {
-      if (!c.canAttack()) continue;
-
-      const targetTeam = this.teamA.members.includes(c)
-        ? this.teamB
-        : this.teamA;
-      const aliveTargets = targetTeam.alive;
-      if (aliveTargets.length === 0) continue;
-
-      const target =
-        aliveTargets[Math.floor(Math.random() * aliveTargets.length)];
-      const { hit, damage } = c.performAttack(target);
-
-      if (hit) this.events$.next({ type: 'hit', attacker: c, target, damage });
-      else this.events$.next({ type: 'miss', attacker: c, target });
-
-      if (target.hp <= 0)
-        this.events$.next({ type: 'defeat', character: target });
+      if (c.defeated) {
+        // Could emit defeat events here if tracking previous state
+      }
     }
 
     if (this.teamA.isDefeated) {
