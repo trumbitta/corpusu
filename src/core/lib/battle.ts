@@ -12,6 +12,11 @@ export type Engagement = {
   type: AttackType;
 };
 
+export type BattleEvent =
+  | { type: 'hit'; attacker: Character; target: Character; damage: number }
+  | { type: 'miss'; attacker: Character; target: Character }
+  | { type: 'defeat'; character: Character };
+
 export class Battle {
   constructor(public teamA: Team, public teamB: Team) {}
 
@@ -26,15 +31,27 @@ export class Battle {
   }
 
   // Main real-time tick
-  tick(delta: number) {
+  // Returns an array of BattleEvent describing attacks/defeats that occurred
+  tick(
+    delta: number
+  ): Array<
+    | { type: 'hit'; attacker: Character; target: Character; damage: number }
+    | { type: 'miss'; attacker: Character; target: Character }
+    | { type: 'defeat'; character: Character }
+  > {
+    const events: Array<
+      | { type: 'hit'; attacker: Character; target: Character; damage: number }
+      | { type: 'miss'; attacker: Character; target: Character }
+      | { type: 'defeat'; character: Character }
+    > = [];
     // Update all characters' attack bars and movement
     for (const team of [this.teamA, this.teamB]) {
       const enemyTeam = team === this.teamA ? this.teamB : this.teamA;
       for (const c of team.alive) {
         if (c.defeated) continue;
-        // If engaged, skip movement
+        // Always update attack bar; movement only happens when not engaged
+        c.update(delta);
         if (!c.engaged) {
-          c.update(delta);
           // Movement logic for melee
           if (c.attackType === 'melee') {
             // Find nearest unengaged enemy
@@ -105,7 +122,6 @@ export class Battle {
           if (possibleTargets.length === 0) {
             possibleTargets = enemyTeam.alive;
           }
-          // For melee, must be in same row AND column
           let target: Character | undefined;
           if (c.attackType === 'melee') {
             target = possibleTargets.find(
@@ -119,20 +135,27 @@ export class Battle {
               possibleTargets.find((e) => !e.engaged) || possibleTargets[0];
           }
           if (target) {
-            const { hit } = c.performAttack(target);
+            const { hit, damage } = c.performAttack(target);
             c.engaged = true;
             if (c.attackType === 'melee') {
               target.engaged = true;
+            }
+            if (hit) {
+              events.push({ type: 'hit', attacker: c, target, damage });
+            } else {
+              events.push({ type: 'miss', attacker: c, target });
             }
             // If target is defeated, both melee and ranged can retarget next tick
             if (hit && target.hp <= 0) {
               target.hp = 0;
               target.engaged = false;
               c.engaged = false; // Allow both melee and ranged to find new targets
+              events.push({ type: 'defeat', character: target });
             }
           }
         }
       }
     }
+    return events;
   }
 }

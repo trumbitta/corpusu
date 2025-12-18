@@ -20,15 +20,25 @@ export class CombatEngine {
     if (!this.running) return;
 
     // Use Battle class for movement, positioning, and tactical targeting
-    this.battle.tick(delta);
-
-    // Track events from attack results by checking HP changes
-    // (This is a simplified event emission; a more robust system would
-    // track events directly from Battle.tick())
-    const allCharacters = [...this.teamA.alive, ...this.teamB.alive];
-    for (const c of allCharacters) {
-      if (c.defeated) {
-        // Could emit defeat events here if tracking previous state
+    // and capture events it produced this tick.
+    const events = this.battle.tick(delta);
+    // Forward Battle events to engine events$ for the UI
+    for (const ev of events) {
+      if (ev.type === 'hit') {
+        this.events$.next({
+          type: 'hit',
+          attacker: ev.attacker,
+          target: ev.target,
+          damage: ev.damage,
+        });
+      } else if (ev.type === 'miss') {
+        this.events$.next({
+          type: 'miss',
+          attacker: ev.attacker,
+          target: ev.target,
+        });
+      } else if (ev.type === 'defeat') {
+        this.events$.next({ type: 'defeat', character: ev.character });
       }
     }
 
